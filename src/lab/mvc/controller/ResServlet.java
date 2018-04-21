@@ -74,6 +74,8 @@ public class ResServlet extends HttpServlet {
 			reservation = (Reservation) request.getSession().getAttribute("reservation");
 		}
 		
+		
+		
 		if (bookChosen != null && !bookChosen.trim().equals("")) {
 			
 			if (request.getSession().getAttribute("user") == null) {
@@ -82,7 +84,12 @@ public class ResServlet extends HttpServlet {
 				return;
 			}
 			
-			reservation.books.put(bookChosen, false);
+			if (reservation.books.containsKey(bookChosen) && reservation.books.get(bookChosen) == true) {
+				reservation.books.put(bookChosen, false);
+				request.setAttribute("rentSuccess", "successful");
+			} else {
+				request.setAttribute("rentSuccess", "unsuccessful");
+			}
 			
 			searchResults = reservation.bookSearch("");
 			request.getSession().setAttribute("books", searchResults);
@@ -91,15 +98,21 @@ public class ResServlet extends HttpServlet {
 			RequestDispatcher dispatcher=getServletContext().getRequestDispatcher("/confirmation.jsp");
 			dispatcher.include(request, response);
 			return;
+		} else if (bookName != null) {
+			searchResults = reservation.bookSearch(bookName);
+		
+			request.getSession().setAttribute("books", searchResults);
+			request.getSession().setAttribute("reservation", reservation);
+			RequestDispatcher dispatcher=getServletContext().getRequestDispatcher("/books.jsp");
+			dispatcher.include(request, response);
+			return;
+		} else {
+			RequestDispatcher dispatcher=getServletContext().getRequestDispatcher("/books.jsp");
+			dispatcher.include(request, response);
+			return;
 		}
 		
-		searchResults = reservation.bookSearch(bookName);
 		
-		request.getSession().setAttribute("books", searchResults);
-		request.getSession().setAttribute("reservation", reservation);
-		RequestDispatcher dispatcher=getServletContext().getRequestDispatcher("/books.jsp");
-		dispatcher.include(request, response);
-		return;
 
 	}
 

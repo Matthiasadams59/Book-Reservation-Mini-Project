@@ -7,7 +7,10 @@
 <title>Show whether the reservation is successful or not.</title>
 </head>
 <body>
-<h3>Reservation was succesful!</h3>
+<%
+String rentSuccess = (String) request.getAttribute("rentSuccess");
+%>
+<h3>Reservation was <%=rentSuccess %>!</h3>
 <form action="AuthServlet" method="POST">
 Log-out : <input type="submit" name="validate" /> 
 </form>
